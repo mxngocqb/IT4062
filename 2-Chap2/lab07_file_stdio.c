@@ -1,109 +1,49 @@
 /* =====================================================================
- * Lab 07 - Lam viec voi tep qua FILE* (vao/ra co bo dem)
- * Nguon: Chapter 2, slide 19-20 (Files / Stream Status Enquiries)
- *
- *   fopen, fprintf, fscanf, fgetc, fputc, feof, ferror, fflush, fclose
+ * Lab 07 - Tep qua FILE* (vao/ra co bo dem)   (slide 19-20)
+ *   fopen, fprintf, fscanf, fgetc, fputc, feof, ferror, fclose
  * ===================================================================== */
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#define TEP_DL   "sinhvien.txt"
-#define TEP_SAO  "sinhvien_ban_sao.txt"
-
-struct sinh_vien {
-    char  mssv[16];
-    char  ten[32];
-    float diem;
-};
+#define TEP "sinhvien.txt"
+#define SAO "sinhvien_ban_sao.txt"
 
 int main(void)
 {
-    struct sinh_vien ds[] = {
-        {"20250001", "Nguyen_Van_A", 8.5f},
-        {"20250002", "Tran_Thi_B",   9.0f},
-        {"20250003", "Le_Van_C",     7.25f},
-    };
-    size_t n = sizeof ds / sizeof ds[0];
-
-    /* ---------- 1. Ghi tep van ban bang fprintf ---------- */
-    printf("--- 1. Ghi tep %s ---\n", TEP_DL);
-    FILE *f = fopen(TEP_DL, "w");        /* "w": tao moi / ghi de */
-    if (f == NULL) {
-        perror("fopen ghi");
-        return 1;
-    }
-    for (size_t i = 0; i < n; i++)
-        fprintf(f, "%s %s %.2f\n", ds[i].mssv, ds[i].ten, (double)ds[i].diem);
-    fflush(f);                            /* day bo dem xuong dia */
+    /* 1. Ghi tep van ban */
+    FILE *f = fopen(TEP, "w");              /* "w" tao moi, "a" ghi noi, "r" doc */
+    if (f == NULL) { perror("fopen ghi"); return 1; }
+    fprintf(f, "20250001 Nguyen_Van_A 8.50\n");
+    fprintf(f, "20250002 Tran_Thi_B 9.00\n");
+    fprintf(f, "20250003 Le_Van_C 7.25\n");
     fclose(f);
-    printf("  Da ghi %zu ban ghi\n", n);
+    printf("Da ghi %s\n\n", TEP);
 
-    /* ---------- 2. Ghi them bang che do "a" ---------- */
-    f = fopen(TEP_DL, "a");               /* "a": ghi noi vao cuoi */
-    if (f != NULL) {
-        fprintf(f, "%s %s %.2f\n", "20250004", "Pham_Thi_D", 6.75);
-        fclose(f);
-        printf("  Da ghi noi them 1 ban ghi\n");
-    }
-
-    /* ---------- 3. Doc lai bang fscanf ---------- */
-    printf("\n--- 2. Doc lai bang fscanf ---\n");
-    f = fopen(TEP_DL, "r");
-    if (f == NULL) {
-        perror("fopen doc");
-        return 1;
-    }
-    struct sinh_vien sv;
+    /* 2. Doc lai bang fscanf */
+    f = fopen(TEP, "r");
+    if (f == NULL) { perror("fopen doc"); return 1; }
+    char mssv[16], ten[32];
+    float diem;
     double tong = 0.0;
     int dem = 0;
-    while (fscanf(f, "%15s %31s %f", sv.mssv, sv.ten, &sv.diem) == 3) {
-        printf("  %-10s %-14s %.2f\n", sv.mssv, sv.ten, (double)sv.diem);
-        tong += sv.diem;
+    while (fscanf(f, "%15s %31s %f", mssv, ten, &diem) == 3) {
+        printf("  %-10s %-14s %.2f\n", mssv, ten, (double)diem);
+        tong += diem;
         dem++;
     }
-    if (ferror(f))                        /* phan biet loi doc voi het tep */
-        perror("  loi khi doc");
-    else if (feof(f))
-        printf("  (da doc het tep)\n");
+    if (ferror(f)) perror("  loi doc");     /* phan biet loi doc voi het tep */
+    else if (feof(f)) printf("  (het tep)\n");
     fclose(f);
-    if (dem > 0)
-        printf("  Diem trung binh = %.2f\n", tong / dem);
+    if (dem) printf("  Trung binh = %.2f\n\n", tong / dem);
 
-    /* ---------- 4. Sao chep tep bang fgetc / fputc ---------- */
-    printf("\n--- 3. Sao chep tep bang fgetc/fputc ---\n");
-    FILE *nguon = fopen(TEP_DL, "r");
-    FILE *dich  = fopen(TEP_SAO, "w");
-    if (nguon == NULL || dich == NULL) {
-        perror("fopen sao chep");
-        if (nguon) fclose(nguon);
-        if (dich)  fclose(dich);
-        return 1;
-    }
+    /* 3. Sao chep tep bang fgetc / fputc */
+    FILE *nguon = fopen(TEP, "r");
+    FILE *dich  = fopen(SAO, "w");
+    if (nguon == NULL || dich == NULL) { perror("fopen sao chep"); return 1; }
     int c;
     long so_byte = 0;
-    while ((c = fgetc(nguon)) != EOF) {
-        fputc(c, dich);
-        so_byte++;
-    }
-    printf("  Da sao chep %ld byte sang %s\n", so_byte, TEP_SAO);
+    while ((c = fgetc(nguon)) != EOF) { fputc(c, dich); so_byte++; }
     fclose(nguon);
     fclose(dich);
-
-    /* ---------- 5. Doc tung dong bang fgets ---------- */
-    printf("\n--- 4. Doc tung dong bang fgets ---\n");
-    f = fopen(TEP_SAO, "r");
-    if (f != NULL) {
-        char dong[128];
-        int stt = 0;
-        while (fgets(dong, sizeof dong, f) != NULL) {
-            dong[strcspn(dong, "\r\n")] = '\0';
-            printf("  dong %d: %s\n", ++stt, dong);
-        }
-        fclose(f);
-    }
-
-    printf("\nHai tep da tao: %s, %s (xoa bang: rm %s %s)\n",
-           TEP_DL, TEP_SAO, TEP_DL, TEP_SAO);
+    printf("Da sao chep %ld byte sang %s\n", so_byte, SAO);
     return 0;
 }
