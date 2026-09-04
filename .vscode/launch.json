@@ -1,43 +1,21 @@
 {
-    // ============================================================
-    //  Go loi bang trinh go loi GOC cua extension C/C++ (cppdbg + lldb).
-    //  Khong can cai them extension nao.
-    //
-    //  Tren macOS, cppdbg KHONG ho tro chay trong terminal tich hop.
-    //  Muon nhap du lieu tu ban phim thi bat buoc dung:
-    //        "externalConsole": true
-    //  -> chuong trinh chay trong mot cua so Terminal.app rieng.
-    // ============================================================
     "version": "0.2.0",
     "configurations": [
         {
-            // MAC DINH: dung cho moi bai, ke ca bai co nhap lieu
-            "name": "Debug tep C hien tai",
-            "type": "cppdbg",
+            "name": "Debug C - GCC 16",
+            "type": "lldb",
             "request": "launch",
+
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
-            "stopAtEntry": false,
             "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "lldb",
-            "preLaunchTask": "C/C++: gcc-16 build active file"
-        },
-        {
-            // Dung cho bai CHI IN RA, khong nhap gi (lab02, lab05, lab10, lab11...)
-            // Ket qua hien ngay trong Debug Console, khong bat cua so ngoai.
-            "name": "Debug tep C hien tai (khong nhap lieu)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb",
-            "preLaunchTask": "C/C++: gcc-16 build active file"
+
+            "preLaunchTask": "C/C++: gcc-16 build active file",
+
+            "terminal": "integrated",
+
+            "sourceLanguages": [
+                "c"
+            ]
         }
     ]
 }
