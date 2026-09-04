@@ -8,7 +8,7 @@
 *.ppt
 *.pptm
 ~$*
-1-Docs/*.pdf
+# 1-Docs/*.pdf
 
 # ---------- Rac cua he dieu hanh ----------
 .DS_Store
