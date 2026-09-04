@@ -11,16 +11,17 @@ Giảng viên: **ThS. Mai Xuân Ngọc**
 ## Mục lục
 
 1. [Cấu trúc repo](#1-cấu-trúc-repo)
-2. [Cài đặt môi trường](#2-cài-đặt-môi-trường)
-   - [Windows (qua WSL)](#21-windows--qua-wsl)
-   - [Ubuntu / Linux](#22-ubuntu--linux)
-   - [macOS](#23-macos)
-   - [Kiểm tra môi trường](#24-kiểm-tra-môi-trường)
-3. [Cài đặt Visual Studio Code và extension](#3-cài-đặt-visual-studio-code-và-extension)
-4. [Biên dịch và chạy chương trình](#4-biên-dịch-và-chạy-chương-trình)
-5. [Gỡ lỗi (debug)](#5-gỡ-lỗi-debug)
-6. [Danh sách bài lab](#6-danh-sách-bài-lab)
-7. [Tài liệu tham khảo](#7-tài-liệu-tham-khảo)
+2. [Đề cương môn học](#2-đề-cương-môn-học)
+3. [Cài đặt môi trường](#3-cài-đặt-môi-trường)
+   - [Windows (qua WSL)](#31-windows--qua-wsl)
+   - [Ubuntu / Linux](#32-ubuntu--linux)
+   - [macOS](#33-macos)
+   - [Kiểm tra môi trường](#34-kiểm-tra-môi-trường)
+4. [Cài đặt Visual Studio Code và extension](#4-cài-đặt-visual-studio-code-và-extension)
+5. [Biên dịch và chạy chương trình](#5-biên-dịch-và-chạy-chương-trình)
+6. [Gỡ lỗi (debug)](#6-gỡ-lỗi-debug)
+7. [Danh sách bài lab](#7-danh-sách-bài-lab)
+8. [Tài liệu tham khảo](#8-tài-liệu-tham-khảo)
 
 ---
 
@@ -48,12 +49,41 @@ IT4062/
 
 ---
 
-## 2. Cài đặt môi trường
+## 2. Đề cương môn học
+
+Học phần gồm **13 buổi**. Cột cuối cho biết slide và mã nguồn tương ứng có trong repo này.
+
+| Buổi | Nội dung | Content | Hoạt động dạy – học | CĐR | Tài liệu trong repo |
+|:---:|---|---|---|:---:|---|
+| 1 | Nhắc lại các khái niệm trong Mạng máy tính | Computer network review | Giảng dạy | CLO1 | `1-Docs/Chapter 1.pptx` |
+| 2 | Nhắc lại về lập trình C/C++ trong môi trường Linux | UNIX C/C++ programming review | Giảng dạy và hướng dẫn làm bài tập | CLO1 | `1-Docs/Chapter 2.pptx` → **[`2-Chap2/`](2-Chap2/)** |
+| 3 | Giới thiệu về Socket | Socket introduction | Giảng dạy | CLO1 | `1-Docs/Chapter 3.pptx` |
+| 4 | Lập trình với các hàm socket cơ bản | Elementary sockets | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | `1-Docs/Chapter 4.pptx` |
+| 5 | Lập trình đa luồng | Threads | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | `1-Docs/Chapter 5.pptx`, `Chapter 6.pptx` |
+| 6 | Các phương pháp vào ra trộn | I/O multiplexing | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | `1-Docs/Chapter 7.pptx` |
+| 7 | Lập trình UDP | UDP sockets | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | `1-Docs/Chapter 4.pptx` (phần UDP) |
+| 8 | Thiết kế giao thức | Custom protocol design | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | — |
+| 9 | Phát triển các dịch vụ trên Linux | Daemon processes | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | — |
+| 10 | Các phương pháp vào/ra nâng cao | Advanced I/O | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | — |
+| 11 | Các phương pháp vào/ra bất đồng bộ | IOCTL and non-blocking I/O | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | — |
+| 12 | Truyền theo nhóm và truyền quảng bá | Multicasting and broadcasting | Giảng dạy và hướng dẫn làm bài tập | CLO1, CLO2 | — |
+| 13 | Sinh viên trình bày dự án | Mini project | Nghe sinh viên thuyết trình và góp ý | CLO2 | — |
+
+**Chuẩn đầu ra (CĐR / CLO)**
+
+- **CLO1** — Hiểu nguyên lý hoạt động của ứng dụng mạng: mô hình TCP/IP, vai trò của
+  tầng giao vận, cơ chế socket, các kiến trúc server–client.
+- **CLO2** — Thiết kế và cài đặt được ứng dụng mạng bằng C trên môi trường UNIX:
+  giao thức tự định nghĩa, phục vụ nhiều client, vào/ra nâng cao.
+
+> Các buổi chưa có tài liệu trong repo sẽ được bổ sung dần theo tiến độ học kỳ.
+
+## 3. Cài đặt môi trường
 
 Mục tiêu: có được **`gcc`** (biên dịch), **`gdb`** hoặc **`lldb`** (gỡ lỗi),
 **`make`**, và các công cụ mạng để dùng cho các chương sau.
 
-### 2.1. Windows — qua WSL
+### 3.1. Windows — qua WSL
 
 Mọi bài thực hành phải **biên dịch và chạy trong môi trường Linux**, không dùng
 trình dịch của Windows.
@@ -70,7 +100,7 @@ trình dịch của Windows.
 wsl --install -d Ubuntu
 ```
 
-### 2.2. Ubuntu / Linux
+### 3.2. Ubuntu / Linux
 
 ```bash
 sudo apt update
@@ -85,7 +115,7 @@ sudo apt install wireshark tshark     # bắt và phân tích gói tin
 sudo apt install valgrind             # kiểm tra rò rỉ bộ nhớ
 ```
 
-### 2.3. macOS
+### 3.3. macOS
 
 ```bash
 # 1. Cài homebrew
@@ -112,7 +142,7 @@ Ba khác biệt cần biết trên macOS:
 macOS là hệ Unix (BSD) nên hầu hết mã socket chạy được, nhưng **bài nộp cần được
 kiểm tra lại trên Ubuntu**.
 
-### 2.4. Kiểm tra môi trường
+### 3.4. Kiểm tra môi trường
 
 ```bash
 gcc -v && gdb -v          # Linux / WSL
@@ -131,7 +161,7 @@ make
 
 ---
 
-## 3. Cài đặt Visual Studio Code và extension
+## 4. Cài đặt Visual Studio Code và extension
 
 1. Tải VS Code: <https://code.visualstudio.com/>
 2. Mở thư mục repo này bằng VS Code (`File → Open Folder…`).
@@ -150,11 +180,11 @@ nhấn nút **"Open a Remote Window"** ở góc trái dưới → **"Connect to 
 mở lại thư mục repo. Thanh trạng thái phải hiện `WSL: Ubuntu`.
 
 Toàn bộ cấu hình biên dịch và gỡ lỗi đã có sẵn trong `.vscode/`, **không cần tự tạo**
-(xem phần 4 nếu bạn dùng WSL/Ubuntu — cần sửa tên trình biên dịch cho đúng máy).
+(xem phần 5 nếu bạn dùng WSL/Ubuntu — cần sửa tên trình biên dịch cho đúng máy).
 
 ---
 
-## 4. Biên dịch và chạy chương trình
+## 5. Biên dịch và chạy chương trình
 
 ### Cách 1 — Bằng VS Code (khuyến nghị)
 
@@ -209,9 +239,9 @@ Các cờ hay dùng:
 
 ---
 
-## 5. Gỡ lỗi (debug)
+## 6. Gỡ lỗi (debug)
 
-### 5.1. Bằng VS Code
+### 6.1. Bằng VS Code
 
 1. Đặt breakpoint: bấm vào **lề trái số dòng** (chấm đỏ).
 2. Nhấn **`F5`**, chọn cấu hình:
@@ -224,7 +254,7 @@ Các cờ hay dùng:
 3. Khi dừng ở breakpoint: xem biến ở panel **VARIABLES**, bước tiếp bằng
    `F10` (next) / `F11` (step into) / `F5` (continue).
 
-### 5.2. Vì sao không gõ được dữ liệu vào Debug Console?
+### 6.2. Vì sao không gõ được dữ liệu vào Debug Console?
 
 Đây là câu hỏi gặp nhiều nhất.
 
@@ -249,7 +279,7 @@ Vì vậy:
 - **Debug Console** — để hỏi trình gỡ lỗi khi chương trình **đang dừng**: gõ `n`,
   `ds[0]`, `dung_luong`, `parray 5 ds`…
 
-### 5.3. Bằng dòng lệnh
+### 6.3. Bằng dòng lệnh
 
 ```bash
 gcc -g -Wall -o prog prog.c
@@ -271,7 +301,7 @@ Cách này chạy hoàn toàn trong terminal nên **nhập liệu luôn hoạt �
 
 ---
 
-## 6. Danh sách bài lab
+## 7. Danh sách bài lab
 
 Chi tiết từng bài xem [`2-Chap2/README.md`](2-Chap2/README.md).
 
@@ -294,7 +324,7 @@ Chi tiết từng bài xem [`2-Chap2/README.md`](2-Chap2/README.md).
 
 ---
 
-## 7. Tài liệu tham khảo
+## 8. Tài liệu tham khảo
 
 1. Lã Thế Vinh, Trương Diệu Linh, Lê Bá Vui, Bùi Trọng Tùng. *Bài giảng học phần
    Thực hành Lập trình mạng (IT4062)*, SoICT — HUST, 2025.
