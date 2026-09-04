@@ -1,0 +1,89 @@
+# =====================================================================
+#  IT4062 - Thuc hanh Lap trinh mang
+# =====================================================================
+
+# ---------- Tai lieu goc cua mon hoc: KHONG dua len repo cong khai ----
+# (slide .pptx va bai giang PDF thuoc ban quyen cua nhom tac gia)
+*.pptx
+*.ppt
+*.pptm
+~$*
+1-Docs/*.pdf
+
+# ---------- Rac cua he dieu hanh ----------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# ---------- Ket qua bien dich C/C++ ----------
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.exe
+*.out
+a.out
+core
+core.*
+vgcore.*
+*.gch
+*.pch
+
+# thu muc dau ra cua Makefile
+bin/
+build/
+obj/
+
+# thong tin go loi cua macOS / Windows
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# ---------- Tep thuc thi sinh ra canh ma nguon (VS Code build task) ---
+# Quy tac: bo qua moi thu ten "lab*", tru thu muc va tru ma nguon .c/.h
+lab*
+!lab*/
+!lab*.c
+!lab*.h
+# hai tep thuc thi cua lab00_build
+lab00_build/hello
+lab00_build/calc
+
+# ---------- Tep do cac bai lab sinh ra khi chay ----------
+sinhvien.txt
+sinhvien_ban_sao.txt
+nguon_mau.bin
+ban_sao.bin
+listing.html
+tep_tam*.txt
+
+# ---------- LaTeX (slide Beamer) ----------
+*.aux
+*.log
+*.nav
+*.snm
+*.toc
+*.vrb
+*.xdv
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bbl
+*.blg
+
+# ---------- VS Code: chi giu cac tep cau hinh dung chung ----------
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/c_cpp_properties.json
+.vscode/settings.json
+.vscode/ipch/

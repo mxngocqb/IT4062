@@ -1,0 +1,8 @@
+{
+    // VS Code se goi y cai cac extension nay khi mo project.
+    // Bang tay: Extensions (Ctrl/Cmd+Shift+X) -> go ten -> Install
+    "recommendations": [
+        "ms-vscode.cpptools-extension-pack"
+    ],
+    "unwantedRecommendations": []
+}

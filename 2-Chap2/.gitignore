@@ -1,0 +1,26 @@
+bin/
+*.o
+*.dSYM/
+lab00_build/hello
+lab00_build/calc
+# tep do cac bai lab sinh ra khi chay
+sinhvien.txt
+sinhvien_ban_sao.txt
+nguon_mau.bin
+ban_sao.bin
+listing.html
+
+# tep thuc thi do VS Code build task sinh ra canh tep .c
+lab01_ieee754
+lab02_pointer_array
+lab03_dynamic_array
+lab04_pointer_to_pointer
+lab05_function_pointer
+lab06_io_basic
+lab07_file_stdio
+lab08_lowlevel_io
+lab09_string
+lab10_memory
+lab11_filesystem
+lab12_process
+lab13_dir_browser
