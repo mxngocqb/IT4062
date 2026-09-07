@@ -4,7 +4,7 @@
 
 # ---------- Tai lieu goc cua mon hoc: KHONG dua len repo cong khai ----
 # (slide .pptx va bai giang PDF thuoc ban quyen cua nhom tac gia)
-# *.pptx
+*.pptx
 # *.ppt
 # *.pptm
 ~$*
