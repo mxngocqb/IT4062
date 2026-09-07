@@ -1,0 +1,18 @@
+bin/
+*.o
+*.dSYM/
+lab00_build/hello
+lab00_build/calc
+# tep do cac bai lab sinh ra khi chay
+sinhvien.txt
+sinhvien_ban_sao.txt
+nguon_mau.bin
+ban_sao.bin
+listing.html
+
+# tep thuc thi do VS Code build task sinh ra canh tep .c
+ipv4
+tcp_client
+tcp_server
+udp_sender
+udp_receiver
