@@ -11,8 +11,9 @@ int main(int argc, char *argv[])
     // Kiểm tra tham số có được nhập vào không
     if (argc != 2)
     {
-        printf("Tham so khong hop le.\n");
-        return 1;
+        argv[1] = "google.com";
+        printf("Default: %s\n", argv[1]);
+        // return 1;
     }
 
     struct addrinfo *res, *p;

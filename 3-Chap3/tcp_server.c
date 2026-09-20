@@ -8,24 +8,26 @@
 #include <errno.h>
 
 int main(){
-    // Tạo Socket
+    // Tạo Socket TCP
     int listener = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (listener == -1) {
         perror("socket");
         exit(EXIT_FAILURE);
     }
 
+    // Thiết lập địa chỉ và cổng cho server socket  
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8080);
     addr.sin_addr.s_addr = INADDR_ANY;
 
+    // Liên kết socket với địa chỉ và cổng
     if (bind(listener, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
         perror("bind");
         close(listener);
         exit(EXIT_FAILURE);
     }
-
+    // Lắng nghe kết nối từ client
     if (listen(listener, 5) == -1) {
         perror("listen");
         close(listener);
@@ -33,16 +35,16 @@ int main(){
     }
 
     printf("Server is listening on port 8080...\n");
-
+    // Chấp nhận kết nối từ client
     int client_socket = accept(listener, NULL, NULL);
     if (client_socket == -1) {
         perror("accept");
         close(listener);
         exit(EXIT_FAILURE); 
     }
+    printf("Client connected!: %d\n", client_socket);
 
-    printf("Client connected!\n: %d", client_socket);
-
+    // Nhận dữ liệu từ client
     char buffer[1024];
     ssize_t bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
     if (bytes_received == -1) {
@@ -52,9 +54,10 @@ int main(){
         exit(EXIT_FAILURE); 
     }
 
+    // Xử lý dữ liệu nhận được 
     buffer[bytes_received] = '\0'; // Null-terminate the received data
     printf("Received: %s\n", buffer);
-
+    // Gửi dữ liệu phản hồi lại cho client
     send(client_socket, buffer, bytes_received, 0);
 
     close(client_socket);
