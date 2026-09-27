@@ -16,3 +16,4 @@ tcp_client
 tcp_server
 udp_sender
 udp_receiver
+telnet_server
