@@ -17,3 +17,7 @@ tcp_server
 udp_sender
 udp_receiver
 telnet_server
+list.txt
+music_server
+music_client
+*.mp3
