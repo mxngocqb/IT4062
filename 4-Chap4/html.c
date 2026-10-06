@@ -6,6 +6,19 @@
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 
+char* content = NULL;
+
+void Append(char** output, const char* str)
+{
+    char* tmp = *output;
+    int oldlen = tmp == NULL ? 0 : strlen(tmp);
+    int newlen = oldlen + strlen(str) + 1;
+    tmp = realloc(tmp, newlen);
+    tmp[newlen - 1] = 0;
+    sprintf(tmp + oldlen, "%s", str);
+    *output = tmp;
+}
+
 int main(){
     int listener = socket(
         AF_INET, 
@@ -51,9 +64,6 @@ int main(){
             return 1;
         }
 
-        char message[] = "Hello from server!\r\n";
-        send(client, message, strlen(message), 0);
-
         int byte_received = recv(
             client, 
             buffer, 
@@ -67,6 +77,23 @@ int main(){
         }
 
         printf("Received %d bytes: %s\n", byte_received, buffer);
+
+        content = NULL;
+        Append(&content, "HTTP/1.1 200 OK\r\n");
+        Append(&content, "Content-Type: text/html\r\n");
+        Append(&content, "Content-Length: 64\r\n");
+        Append(&content, "\r\n");
+        Append(&content, "<h1>Show server directory</h1>");
+        Append(&content, "<p>This is a simple HTML page.</p>");
+
+        send(
+            client, 
+            content, 
+            strlen(content), 
+            0
+        );
+
+
         close(client);
     }
 
