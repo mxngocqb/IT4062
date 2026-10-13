@@ -8,10 +8,8 @@
 #include <signal.h>
 #define PORT 8080
 
-void signal_handler(int signum) {
-    int status;
-    int pid = wait(&status);
-    printf("Child process with PID %d terminated with status: %d\n", pid, WEXITSTATUS(status));
+void signal_handler(int signum) {    
+    while (waitpid(-1, NULL, WNOHANG) > 0);
 }
 
 int main(){
