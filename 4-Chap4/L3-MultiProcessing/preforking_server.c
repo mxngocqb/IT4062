@@ -48,17 +48,17 @@ int main(){
                     perror("accept() failed");
                     continue;
                 } 
+                if (send(client, messsage, strlen(messsage), 0) == -1){
+                    perror("send() failed");
+                    continue;
+                }
+                printf("Sent message to client: %s\n", messsage);
                 int byte_received = recv(client, buffer, sizeof(buffer), 0);
                 printf("Received %d bytes: %s\n", byte_received, buffer);
                 if (byte_received == -1){  
                     perror("recv() failed");
                     continue;
                 }
-                if (send(client, messsage, strlen(messsage), 0) == -1){
-                    perror("send() failed");
-                    continue;
-                }
-                printf("Sent message to client: %s\n", messsage);
                 close(client);
             }
             exit(0);
