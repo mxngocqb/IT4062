@@ -7,8 +7,51 @@
 #include <arpa/inet.h>
 #include <string.h>
 
-int client_socket_list[100];
-int number_of_clients = 0;
+typedef struct client_list{
+    int client;
+    struct client_list *next;
+} client_list;
+
+client_list *client_head = NULL;
+
+void add_client(int client_socket){
+    client_list *new_client = (client_list *)malloc(sizeof(client_list));
+    new_client->client = client_socket;
+    new_client->next = client_head;
+    client_head = new_client;
+    while(new_client->next != NULL){
+        printf("[%d] -> ", new_client->client);
+        new_client = new_client->next;  
+    }
+    printf("[%d]\n", new_client->client);
+}
+
+void remove_client(int client_socket){
+    if(client_head == NULL) return;
+
+    if(client_head->client == client_socket){
+        client_list *temp = client_head;
+        client_head = client_head->next;
+        free(temp);
+        return;
+    }
+
+    client_list *current = client_head;
+    while(current->next != NULL && current->next->client != client_socket){
+        current = current->next;
+    }
+
+    if(current->next != NULL){
+        client_list *temp = current->next;
+        current->next = current->next->next;
+        free(temp);
+    }
+    
+    while(current != NULL){
+        printf("[%d] -> ", current->client);
+        current = current->next;  
+    }
+}
 
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 
@@ -28,8 +71,7 @@ int main(){
         // Accept a client connection
         int client_socket = accept(server_socket, NULL, NULL);
         pthread_mutex_lock(&lock);
-        client_socket_list[number_of_clients] = client_socket;
-        number_of_clients++;
+        add_client(client_socket);
         pthread_mutex_unlock(&lock);
         pthread_t thread;
         pthread_create(&thread, NULL, handle_client, &client_socket);
@@ -41,6 +83,7 @@ int main(){
 void *handle_client(void *arg){
     int client_socket = *(int *)arg;
     char buffer[1024];
+    char response[1024];
     while(0 == 0){
         int bytes_received = recv(client_socket, buffer, sizeof(buffer), 0);
         if(bytes_received <= 0){
@@ -49,14 +92,26 @@ void *handle_client(void *arg){
         }
         buffer[bytes_received] = '\0';
         printf("Received: %s\n", buffer);
+        snprintf(response, sizeof(response), "Client %d: %s", client_socket, buffer);
         // Broadcast the message to all connected clients
         pthread_mutex_lock(&lock);
-        for(int i = 0; i < number_of_clients; i++){
-            if(client_socket_list[i] != client_socket){ // Don't send to the sender
-                send(client_socket_list[i], buffer, bytes_received, 0);
-            }
-        }
+        client_list *copy = malloc(sizeof(client_list));
+        *copy = *client_head;
         pthread_mutex_unlock(&lock);
+        while(copy != NULL){
+            if(copy->client != client_socket){
+                send(copy->client, response, strlen(response), 0);
+            }
+            copy = copy->next;
+        }
+        free(copy);
     }
+
+    pthread_mutex_lock(&lock);
+    remove_client(client_socket);
+    pthread_mutex_unlock(&lock);
+
+    close(client_socket);
+    
     return NULL;
 }
