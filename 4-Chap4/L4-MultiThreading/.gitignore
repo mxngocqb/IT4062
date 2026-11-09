@@ -12,5 +12,5 @@ ex6
 pthread_chatroom
 pthread_server
 pthread_client
-prethread_server.c
+# prethread_server.c
 prethread_server
