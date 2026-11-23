@@ -9,21 +9,17 @@
 
 typedef struct client_list{
     int client;
-    char nickname[50];
+    char nickname[64];
     struct client_list *next;
 } client_list;
 
 client_list *client_head = NULL;
-
-void add_client(int client_socket);
-void remove_client(int client_socket);
-int set_nickname(int client_socket, char *nickname);
- // 100 OK, 200 NICKNAME IN USE, 300 INVALID NICKNAME, 999 UNKNOWN ERROR, 200, 300 yeu cau sinh vien thiet ke
-char* get_nickname(int client_socket); // 100 OK, 999 UNKNOWN ERROR
-void unset_nickname(int client_socket); // 100 OK, 999 UNKNOWN ERROR
-void *handle_client(void *arg);
 pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
-
+void *handle_client(void *arg);
+void add_client(int client_socket);
+void set_nickname(int client_socket, const char *nickname);
+char* get_nickname(int client_socket);
+void remove_client(int client_socket);
 
 int main(){
     // Create a socket
@@ -58,54 +54,28 @@ void *handle_client(void *arg){
             printf("Client disconnected or error occurred.\n");
             break;
         }
-        
         if (strncmp(buffer, "JOIN ", 5) == 0){
-            memset(response, 0, sizeof(response));
             char *nickname = buffer + 5;
-            pthread_mutex_lock(&lock);
-            int state = set_nickname(client_socket, nickname);
-            pthread_mutex_unlock(&lock);
-            if (state == 100){
-                snprintf(response, sizeof(response), "100 OK\r\n");
-                send(client_socket, response, strlen(response), 0);
-            } else if (state == 200){
-                snprintf(response, sizeof(response), "200 NICKNAME IN USE\r\n");
-                send(client_socket, response, strlen(response), 0);
-            } else if (state == 300){
-                snprintf(response, sizeof(response), "300 INVALID NICKNAME\r\n");
-                send(client_socket, response, strlen(response), 0);
-            } else {
-                snprintf(response, sizeof(response), "999 UNKNOWN ERROR\r\n");
-                send(client_socket, response, strlen(response), 0);
-            }
+            nickname[strcspn(nickname, "\r\n")] = '\0';
+            set_nickname(client_socket, nickname);
+            send(client_socket, "100 OK\n", 7, 0);
         } else if (strncmp(buffer, "MSG ", 4) == 0){
-            memset(response, 0, sizeof(response));
-            char *client_nickname = get_nickname(client_socket);
+            // Message là gì
+            // Message đươc gửi bởi ai
+            char *nickname = get_nickname(client_socket);
             char *message = buffer + 4;
+            snprintf(response, sizeof(response), "[%s]: %s", nickname, message);
             pthread_mutex_lock(&lock);
-            client_list *copy = malloc(sizeof(client_list));
-            *copy = *client_head;
-            pthread_mutex_unlock(&lock);
-            while(copy != NULL){
-                if(copy->client != client_socket && strlen(copy->nickname) > 0){
-                    snprintf(response, sizeof(response), "%s: %s\r\n", client_nickname, message);
-                    send(copy->client, response, strlen(response), 0);
+            client_list *current = client_head;
+            while(current != NULL){
+                if(current->client != client_socket){
+                    send(current->client, response, strlen(response), 0);
                 }
-                copy = copy->next;
+                current = current->next;
             }
-            snprintf(response, sizeof(response), "100 OK\r\n");
-            send(client_socket, response, strlen(response), 0);
-            free(copy);
-        } else if (strncmp(buffer, "QUIT", 4) == 0){
-            snprintf(response, sizeof(response), "100 OK\r\n");
-            unset_nickname(client_socket);
-            send(client_socket, response, strlen(response), 0);
-        } else {
-            snprintf(response, sizeof(response), "999 UNKNOWN COMMAND\r\n");
-            send(client_socket, response, strlen(response), 0);
+            pthread_mutex_unlock(&lock);
+            send(client_socket, "100 OK\n", 7, 0);
         }
-
-
     }
 
     pthread_mutex_lock(&lock);
@@ -157,35 +127,25 @@ void remove_client(int client_socket){
     }
 }
 
-int set_nickname(int client_socket, char *nickname){
+void set_nickname(int client_socket, const char *nickname){
     client_list *current = client_head;
     while(current != NULL){
         if(current->client == client_socket){
             strncpy(current->nickname, nickname, sizeof(current->nickname) - 1);
-            return 100; // OK   
+            current->nickname[sizeof(current->nickname) - 1] = '\0'; // Ensure null-termination
+            break;
         }
         current = current->next;
     }
-    return 999; // UNKNOWN ERROR
 }
 
 char* get_nickname(int client_socket){
     client_list *current = client_head;
     while(current != NULL){
         if(current->client == client_socket){
-            return current->nickname; // Return the nickname
+            return current->nickname;
         }
         current = current->next;
     }
-}
-
-void unset_nickname(int client_socket){
-    client_list *current = client_head;
-    while(current != NULL){
-        if(current->client == client_socket){
-            current->nickname[0] = '\0'; // Clear the nickname
-            return; // OK
-        }
-        current = current->next;
-    }
+    return NULL; // Return NULL if the client is not found
 }
